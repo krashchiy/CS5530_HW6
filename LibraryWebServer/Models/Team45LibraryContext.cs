@@ -25,7 +25,7 @@ namespace LibraryWebServer.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseMySql("Server=atr.eng.utah.edu;User Id=u0710248;Password=precursor;Database=Team45Library");
+                optionsBuilder.UseMySql("Server=atr.eng.utah.edu;User Id=<uId>;Password=<pass>;Database=Team45Library");
             }
         }
 
