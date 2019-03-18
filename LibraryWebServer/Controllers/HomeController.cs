@@ -74,7 +74,7 @@ namespace LibraryWebServer.Controllers
     [HttpPost]
     public ActionResult AllTitles()
     {
-        object result;
+        //object result;
         using (var cont = new Team45LibraryContext())
         {
             //select t.*, i.Serial, case when p.Name is null then '' else p.Name end as Name
@@ -83,7 +83,7 @@ namespace LibraryWebServer.Controllers
             //left join CheckedOut c on i.Serial = c.Serial
             //left join Patrons p on c.CardNum = p.CardNum;
 
-            result = from t in cont.Titles 
+            var result = from t in cont.Titles 
                 join i in cont.Inventory on t.Isbn equals i.Isbn into inv
                     from outer1 in inv.DefaultIfEmpty()
                 join c in cont.CheckedOut on outer1.Serial equals c.Serial into ser
@@ -91,10 +91,9 @@ namespace LibraryWebServer.Controllers
                 join p in cont.Patrons on outer2.CardNum equals p.CardNum into pat
                     from outer3 in pat.DefaultIfEmpty()
                 select new {t.Isbn, t.Title, t.Author, Serial = outer1 != null ? (uint?)outer1.Serial : null, Name = outer3 == null ? string.Empty : outer3.Name ?? string.Empty};
-        }
-      
-      return Json(result);
 
+            return Json(result.ToArray());
+        }
     }
 
     /// <summary>
@@ -108,7 +107,6 @@ namespace LibraryWebServer.Controllers
     [HttpPost]
     public ActionResult ListMyBooks()
     {
-        object result;
         using (var cont = new Team45LibraryContext())
         {
             //select t.Title, t.Author, i.Serial
@@ -117,13 +115,15 @@ namespace LibraryWebServer.Controllers
             //natural join CheckedOut c
             //where c.CardNum = 1;
 
-            result = from t in cont.Titles 
+            var result = from t in cont.Titles 
                 join i in cont.Inventory on t.Isbn equals i.Isbn 
                 join c in cont.CheckedOut on i.Serial equals c.Serial 
                 where c.CardNum == Convert.ToUInt32(card)
                 select new {t.Title, t.Author, i.Serial};
+
+            return Json(result.ToArray());
         }
-        return Json(result);
+        
     }
 
 
